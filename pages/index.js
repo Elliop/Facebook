@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Header from "../components/Header";
 
 export default function Home() {
   return (
@@ -6,7 +7,8 @@ export default function Home() {
       <Head>
         <title>Facebook</title>
       </Head>
-      <h1>Facebook 2.0 </h1>
+      <Header />
+      <main></main>
     </div>
   );
 }
