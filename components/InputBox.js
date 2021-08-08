@@ -2,29 +2,76 @@ import { useSession } from "next-auth/client";
 import Image from "next/image";
 import { EmojiHappyIcon } from "@heroicons/react/outline";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
-import { useRef } from "react";
-import { db } from "../firebase";
+import { useRef, useState } from "react";
+import { db, storage } from "../firebase";
 import firebase from "firebase";
 
 function InputBox() {
   const [session, loading] = useSession();
   const inputRef = useRef(null);
+  const filepickerRef = useRef(null);
+  const [imageToPost, setImageToPost] = useState(null);
 
   const sendPost = (e) => {
     e.preventDefault();
 
     if (!inputRef.current.value) return;
 
-    db.collection("posts").add({
-      message: inputRef.current.value,
-      name: session.user.name,
-      email: session.user.email,
-      image: session.user.image,
-      // Real Time From Firebase
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    db.collection("posts")
+      .add({
+        message: inputRef.current.value,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+        // Real Time From Firebase
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then((doc) => {
+        if (imageToPost) {
+          // Upload Image
+          const uploadTask = storage
+            .ref("posts")
+            .child(doc.id)
+            .putString(imageToPost, "data_url");
+          removeImage();
+          uploadTask.on(
+            "state_change",
+            null,
+            (error) => console.error(error),
+            () => {
+              // When the upload completes
+              storage
+                .ref(`posts/${doc.id}`)
+                .getDownloadURL()
+                .then((url) => {
+                  db.collection("posts").doc(doc.id).set(
+                    {
+                      posImage: url,
+                    },
+                    { merge: true }
+                  );
+                });
+            }
+          );
+        }
+      });
 
     inputRef.current.value = "";
+  };
+
+  const addImageToPst = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    reader.onload = (readerEvent) => {
+      setImageToPost(readerEvent.target.result);
+    };
+  };
+
+  const removeImage = () => {
+    setImageToPost(null);
   };
 
   return (
@@ -52,6 +99,20 @@ function InputBox() {
             Submit
           </button>
         </form>
+        {imageToPost && (
+          <div
+            onClick={removeImage}
+            className="flex flex-col filter hover:brightness-110 
+          transition duration-150 transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              className="h-10 object-contain"
+              src={imageToPost}
+              alt="Image To Post"
+            />
+            <p className="text-xs text-red-500 text-center">Remove</p>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-evenly p-3 border-t">
@@ -59,10 +120,18 @@ function InputBox() {
           <VideoCameraIcon className="h-7 text-red-500" />
           <p className="text-xs sm:text-sm xl:text-base">Live Video</p>
         </div>
-        <div className="inpuIcon">
+
+        <div className="inpuIcon" onClick={() => filepickerRef.current.click()}>
           <CameraIcon className="h-7 text-green-400" />
           <p className="text-xs sm:text-sm xl:text-base">Photo/Video</p>
+          <input
+            ref={filepickerRef}
+            onChange={addImageToPst}
+            type="file"
+            hidden
+          ></input>
         </div>
+
         <div className="inpuIcon">
           <EmojiHappyIcon className="h-7 text-yellow-300" />
           <p className="text-xs sm:text-sm xl:text-base">Feeling/Activity</p>
