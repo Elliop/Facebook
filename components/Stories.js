@@ -19,13 +19,13 @@ function Stories() {
     },
     {
       name: "Elon Musk",
-      src: "https://links.papareact.com/4zn",
-      profile: "https://links.papareact.com/kxk",
+      src: "/ElonStory.jpeg",
+      profile: "/Elon.jpeg",
     },
     {
       name: "Bill Gates",
-      src: "https://links.papareact.com/4u4",
-      profile: "https://links.papareact.com/zvy",
+      src: "/BillStory.jpeg",
+      profile: "/Bill.png",
     },
   ];
 
