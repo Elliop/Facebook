@@ -46,7 +46,7 @@ function InputBox() {
                 .then((url) => {
                   db.collection("posts").doc(doc.id).set(
                     {
-                      posImage: url,
+                      postImage: url,
                     },
                     { merge: true }
                   );
