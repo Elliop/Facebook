@@ -29,10 +29,10 @@ function Header() {
           height={40}
           layout="fixed"
         />
-        <div className="flex ml-2 items-center rounded-full bg-gray-100 p-2">
+        <div className="hidden md:inline-flex ml-2 items-center rounded-full bg-gray-100 p-2">
           <SearchIcon className="h-6 text-gray-600" />
           <input
-            className="hidden md:inline-flex ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink"
+            className="hidden lg:inline-flex ml-2 bg-transparent outline-none placeholder-gray-500 flex-shrink"
             type="text"
             placeholder="Search Facebook"
           ></input>
@@ -50,17 +50,16 @@ function Header() {
       </div>
       {/* Right */}
 
-      <Image
-        onClick={signOut}
-        className="rounded-full cursor-pointer"
-        src={session.user.image}
-        width={40}
-        height={40}
-        layout="fixed"
-      />
-
-      <div className="flex items-center ml-2 sm:space-x-2 justify-end">
-        <p className="whitespace-nowrap font-semibold pr-3">
+      <div className="flex items-center sm:space-x-2 justify-end">
+        <Image
+          onClick={signOut}
+          className="rounded-full cursor-pointer"
+          src={session.user.image}
+          width={40}
+          height={40}
+          layout="fixed"
+        />
+        <p className="hidden lg:inline-flex text-sm whitespace-nowrap font-semibold pr-3">
           {session.user.name}
         </p>
         <ViewGridIcon className="icon" />

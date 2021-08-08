@@ -13,7 +13,7 @@ export default function Home({ session }) {
         <title>Facebook</title>
       </Head>
       <Header />
-      <main className="felx">
+      <main className="flex">
         <Sidebar />
         <Feed />
       </main>
