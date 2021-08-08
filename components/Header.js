@@ -60,7 +60,9 @@ function Header() {
       />
 
       <div className="flex items-center ml-2 sm:space-x-2 justify-end">
-        <p className="whitespace-nowrap font-semibold pr-3">Elliop Sh</p>
+        <p className="whitespace-nowrap font-semibold pr-3">
+          {session.user.name}
+        </p>
         <ViewGridIcon className="icon" />
         <ChatIcon className="icon" />
         <BellIcon className="icon" />
